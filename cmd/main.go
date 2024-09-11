@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/BoburF/bhsml/src/bhsml-asm"
-	"github.com/BoburF/browser/renderer"
 )
 
 func main() {
@@ -25,6 +24,4 @@ func main() {
 
 	err = basm.Assemble(file, fo)
 	fmt.Println("JSON data written to ast.json successfully")
-
-	renderer.Render()
 }
