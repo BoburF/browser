@@ -9,6 +9,12 @@
       "text": "bhsml",
       "children": [
         {
+          "type": "text",
+          "attributes": null,
+          "text": "",
+          "children": []
+        },
+        {
           "type": "tag",
           "attributes": null,
           "text": "h1",
