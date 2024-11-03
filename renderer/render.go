@@ -1,47 +1,54 @@
 package renderer
 
 import (
-	"fmt"
-	// "time"
+	"image/color"
+	"log"
+	"os"
 
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/canvas"
-	// "fyne.io/fyne/v2/widget"
+	"gioui.org/app"
+	"gioui.org/op"
+	"gioui.org/text"
+	"gioui.org/widget/material"
 )
 
 func Render() {
-	a := app.New()
-	w := a.NewWindow("Hello World")
-	w.Resize(fyne.NewSize(700, 600))	
-
-	file, err := fyne.LoadResourceFromPath("tel.jpg")
-	if err != nil {
-		fmt.Println("Image is not read!!!")
-		return
-	}
-	image := canvas.NewImageFromResource(file)
-	image.FillMode = canvas.ImageFillContain
-	w.SetContent(image)
-
-	// clock := widget.NewLabel("")
-	// w.SetContent(widget.NewLabel("Hello World!"))
-	// w.SetContent(clock)
-	// go func() {
-	// 	for range time.Tick(time.Second) {
-	// 		updateTime(clock)
-	// 	}
-	// }()
-
-	w.ShowAndRun()
-	tidyUp()
+	go func() {
+		window := new(app.Window)
+		err := run(window)
+		if err != nil {
+			log.Fatal(err)
+		}
+		os.Exit(0)
+	}()
+	app.Main()
 }
 
-// func updateTime(clock *widget.Label) {
-// 	formatted := time.Now().Format("Time: 03:04:05")
-// 	clock.SetText(formatted)
-// }
+func run(window *app.Window) error {
+	theme := material.NewTheme()
+	var ops op.Ops
+	for {
+		switch e := window.Event().(type) {
+		case app.DestroyEvent:
+			return e.Err
+		case app.FrameEvent:
+			// This graphics context is used for managing the rendering state.
+			gtx := app.NewContext(&ops, e)
 
-func tidyUp() {
-	fmt.Println("Exited")
+			// Define an large label with an appropriate text:
+			title := material.H1(theme, "Hello, Gio")
+
+			// Change the color of the label.
+			maroon := color.NRGBA{R: 127, G: 0, B: 0, A: 255}
+			title.Color = maroon
+
+			// Change the position of the label.
+			title.Alignment = text.Middle
+
+			// Draw the label to the graphics context.
+			title.Layout(gtx)
+
+			// Pass the drawing operations to the GPU.
+			e.Frame(gtx.Ops)
+		}
+	}
 }
